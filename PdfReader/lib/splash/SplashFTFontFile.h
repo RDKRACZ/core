@@ -20,7 +20,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "SplashFontFile.h"
-
+namespace PdfReader {
 class SplashFontFileID;
 class SplashFTFontEngine;
 
@@ -89,7 +89,7 @@ private:
 
   friend class SplashFTFont;
 };
-
+}
 #endif // HAVE_FREETYPE_H
 
 #endif

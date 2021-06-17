@@ -24,7 +24,7 @@
 //------------------------------------------------------------------------
 // SplashFTFontFile
 //------------------------------------------------------------------------
-
+namespace PdfReader {
 SplashFontFile *SplashFTFontFile::loadType1Font(SplashFTFontEngine *engineA,
 						SplashFontFileID *idA,
 						SplashFontType fontTypeA,
@@ -167,5 +167,5 @@ SplashFont *SplashFTFontFile::makeFont(SplashCoord *mat,
   font->initCache();
   return font;
 }
-
+}
 #endif // HAVE_FREETYPE_H

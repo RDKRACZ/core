@@ -21,6 +21,7 @@
 #include "Trace.h"
 
 // NB: This module is NOT thread-safe.
+namespace PdfReader {
 
 static bool traceInitialized = false;
 static FILE *traceOut = NULL;
@@ -110,5 +111,5 @@ void traceMessage(const char *fmt, ...) {
   va_end(args);
   fprintf(traceOut, "\n");
 }
-
+}
 #endif // ENABLE_TRACING

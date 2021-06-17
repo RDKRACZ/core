@@ -9,28 +9,22 @@
 #ifndef ERRORCODES_H
 #define ERRORCODES_H
 
-#define errNone             0	// no error
-
-#define errOpenFile         1	// couldn't open the PDF file
-
-#define errBadCatalog       2	// couldn't read the page catalog
-
-#define errDamaged          3	// PDF file was damaged and couldn't be
-				// repaired
-
-#define errEncrypted        4	// file was encrypted and password was
-				// incorrect or not supplied
-
-#define errHighlightFile    5	// nonexistent or invalid highlight file
-
-#define errBadPrinter       6   // invalid printer
-
-#define errPrinting         7   // error during printing
-
-#define errPermission       8	// PDF file doesn't allow that operation
-
-#define errBadPageNum       9	// invalid page number
-
-#define errFileIO          10   // file I/O error
-
+namespace PdfReader
+{
+    typedef enum
+    {
+        errNone          =  0, // Нет ошибок
+        errOpenFile      =  1, // Ошибка при открытии PDF файла
+        errBadCatalog    =  2, // couldn't read the page catalog
+        errDamaged       =  3, // PDF файл был поврежден и его невозможно восстановить
+        errEncrypted     =  4, // Файл зашифрован, авторизация не пройдена
+        errHighlightFile =  5, // nonexistent or invalid highlight file
+        errBadPrinter    =  6, // плохой принтер
+        errPrinting      =  7, // ошибка во время печати
+        errPermission    =  8, // Ошибка связанная с ограничениями наложенными на файл
+        errBadPageNum    =  9, // Неверное количество страниц
+        errFileIO        = 10, // Ошибка при чтении/записи
+        errMemory        = 11  // Memory exceed
+    } EError;
+}
 #endif

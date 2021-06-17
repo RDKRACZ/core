@@ -13,7 +13,7 @@
 // NB: do not include gmempp.h here.
 
 #ifdef DEBUG_MEM
-
+namespace PdfReader {
 void *operator new(size_t size) {
   return gmalloc((int)size, 1);
 }
@@ -47,5 +47,5 @@ void operator delete[](void *p) {
 void operator delete[](void *p, int dummy) {
   gfree(p);
 }
-
+}
 #endif

@@ -13,11 +13,12 @@
 
 #define nBuiltinFonts      14
 #define nBuiltinFontSubsts 12
+namespace PdfReader {
+    extern BuiltinFont builtinFonts[nBuiltinFonts];
+    extern BuiltinFont *builtinFontSubst[nBuiltinFontSubsts];
 
-extern BuiltinFont builtinFonts[nBuiltinFonts];
-extern BuiltinFont *builtinFontSubst[nBuiltinFontSubsts];
+    extern void initBuiltinFontTables();
 
-extern void initBuiltinFontTables();
-extern void freeBuiltinFontTables();
-
+    extern void freeBuiltinFontTables();
+}
 #endif

@@ -17,111 +17,130 @@
 
 #include "gtypes.h"
 #include "Object.h"
+namespace PdfReader {
+    class GString;
 
-class GString;
-class PDFDoc;
-struct XpdfSecurityHandler;
+    class PDFDoc;
+
+    struct XpdfSecurityHandler;
 
 //------------------------------------------------------------------------
 // SecurityHandler
 //------------------------------------------------------------------------
 
-class SecurityHandler {
-public:
+    class SecurityHandler {
+    public:
 
-  static SecurityHandler *make(PDFDoc *docA, Object *encryptDictA);
+        static SecurityHandler *make(PDFDoc *docA, Object *encryptDictA);
 
-  SecurityHandler(PDFDoc *docA);
-  virtual ~SecurityHandler();
+        SecurityHandler(PDFDoc *docA);
 
-  // Returns true if the file is actually unencrypted.
-  virtual GBool isUnencrypted() { return gFalse; }
+        virtual ~SecurityHandler();
 
-  // Check the document's encryption.  If the document is encrypted,
-  // this will first try <ownerPassword> and <userPassword> (in
-  // "batch" mode), and if those fail, it will attempt to request a
-  // password from the user.  This is the high-level function that
-  // calls the lower level functions for the specific security handler
-  // (requesting a password three times, etc.).  Returns true if the
-  // document can be opened (if it's unencrypted, or if a correct
-  // password is obtained); false otherwise (encrypted and no correct
-  // password).
-  GBool checkEncryption(GString *ownerPassword,
-			GString *userPassword);
+        // Returns true if the file is actually unencrypted.
+        virtual GBool isUnencrypted() { return gFalse; }
 
-  // Create authorization data for the specified owner and user
-  // passwords.  If the security handler doesn't support "batch" mode,
-  // this function should return NULL.
-  virtual void *makeAuthData(GString *ownerPassword,
-			     GString *userPassword) = 0;
+        // Check the document's encryption.  If the document is encrypted,
+        // this will first try <ownerPassword> and <userPassword> (in
+        // "batch" mode), and if those fail, it will attempt to request a
+        // password from the user.  This is the high-level function that
+        // calls the lower level functions for the specific security handler
+        // (requesting a password three times, etc.).  Returns true if the
+        // document can be opened (if it's unencrypted, or if a correct
+        // password is obtained); false otherwise (encrypted and no correct
+        // password).
+        GBool checkEncryption(GString *ownerPassword,
+                              GString *userPassword);
 
-  // Construct authorization data, typically by prompting the user for
-  // a password.  Returns an authorization data object, or NULL to
-  // cancel.
-  virtual void *getAuthData() = 0;
+        // Create authorization data for the specified owner and user
+        // passwords.  If the security handler doesn't support "batch" mode,
+        // this function should return NULL.
+        virtual void *makeAuthData(GString *ownerPassword,
+                                   GString *userPassword) = 0;
 
-  // Free the authorization data returned by makeAuthData or
-  // getAuthData.
-  virtual void freeAuthData(void *authData) = 0;
+        // Construct authorization data, typically by prompting the user for
+        // a password.  Returns an authorization data object, or NULL to
+        // cancel.
+        virtual void *getAuthData() = 0;
 
-  // Attempt to authorize the document, using the supplied
-  // authorization data (which may be NULL).  Returns true if
-  // successful (i.e., if at least the right to open the document was
-  // granted).
-  virtual GBool authorize(void *authData) = 0;
+        // Free the authorization data returned by makeAuthData or
+        // getAuthData.
+        virtual void freeAuthData(void *authData) = 0;
 
-  // Return the various authorization parameters.  These are only
-  // valid after authorize has returned true.
-  virtual int getPermissionFlags() = 0;
-  virtual GBool getOwnerPasswordOk() = 0;
-  virtual Guchar *getFileKey() = 0;
-  virtual int getFileKeyLength() = 0;
-  virtual int getEncVersion() = 0;
-  virtual CryptAlgorithm getEncAlgorithm() = 0;
+        // Attempt to authorize the document, using the supplied
+        // authorization data (which may be NULL).  Returns true if
+        // successful (i.e., if at least the right to open the document was
+        // granted).
+        virtual GBool authorize(void *authData) = 0;
 
-protected:
+        // Return the various authorization parameters.  These are only
+        // valid after authorize has returned true.
+        virtual int getPermissionFlags() = 0;
 
-  PDFDoc *doc;
-};
+        virtual GBool getOwnerPasswordOk() = 0;
+
+        virtual Guchar *getFileKey() = 0;
+
+        virtual int getFileKeyLength() = 0;
+
+        virtual int getEncVersion() = 0;
+
+        virtual CryptAlgorithm getEncAlgorithm() = 0;
+
+    protected:
+
+        PDFDoc *doc;
+    };
 
 //------------------------------------------------------------------------
 // StandardSecurityHandler
 //------------------------------------------------------------------------
 
-class StandardSecurityHandler: public SecurityHandler {
-public:
+    class StandardSecurityHandler : public SecurityHandler {
+    public:
 
-  StandardSecurityHandler(PDFDoc *docA, Object *encryptDictA);
-  virtual ~StandardSecurityHandler();
+        StandardSecurityHandler(PDFDoc *docA, Object *encryptDictA);
 
-  virtual GBool isUnencrypted();
-  virtual void *makeAuthData(GString *ownerPassword,
-			     GString *userPassword);
-  virtual void *getAuthData();
-  virtual void freeAuthData(void *authData);
-  virtual GBool authorize(void *authData);
-  virtual int getPermissionFlags() { return permFlags; }
-  virtual GBool getOwnerPasswordOk() { return ownerPasswordOk; }
-  virtual Guchar *getFileKey() { return fileKey; }
-  virtual int getFileKeyLength() { return fileKeyLength; }
-  virtual int getEncVersion() { return encVersion; }
-  virtual CryptAlgorithm getEncAlgorithm() { return encAlgorithm; }
+        virtual ~StandardSecurityHandler();
 
-private:
+        virtual GBool isUnencrypted();
 
-  int permFlags;
-  GBool ownerPasswordOk;
-  Guchar fileKey[32];
-  int fileKeyLength;
-  int encVersion;
-  int encRevision;
-  CryptAlgorithm encAlgorithm;
-  GBool encryptMetadata;
+        virtual void *makeAuthData(GString *ownerPassword,
+                                   GString *userPassword);
 
-  GString *ownerKey, *userKey;
-  GString *ownerEnc, *userEnc;
-  GString *fileID;
-  GBool ok;
-};
+        virtual void *getAuthData();
 
+        virtual void freeAuthData(void *authData);
+
+        virtual GBool authorize(void *authData);
+
+        virtual int getPermissionFlags() { return permFlags; }
+
+        virtual GBool getOwnerPasswordOk() { return ownerPasswordOk; }
+
+        virtual Guchar *getFileKey() { return fileKey; }
+
+        virtual int getFileKeyLength() { return fileKeyLength; }
+
+        virtual int getEncVersion() { return encVersion; }
+
+        virtual CryptAlgorithm getEncAlgorithm() { return encAlgorithm; }
+
+    private:
+
+        int permFlags;
+        GBool ownerPasswordOk;
+        Guchar fileKey[32];
+        int fileKeyLength;
+        int encVersion;
+        int encRevision;
+        CryptAlgorithm encAlgorithm;
+        GBool encryptMetadata;
+
+        GString *ownerKey, *userKey;
+        GString *ownerEnc, *userEnc;
+        GString *fileID;
+        GBool ok;
+    };
+}
 #endif

@@ -29,7 +29,7 @@
 #ifdef DEBUG_MEM
 
 #include <stdlib.h>
-
+namespace PdfReader {
 extern void *operator new(size_t size, int dummy);
 extern void *operator new[](size_t size, int dummy);
 
@@ -37,7 +37,7 @@ extern void *operator new[](size_t size, int dummy);
 // with Visual Studio.
 extern void operator delete(void *p, int dummy);
 extern void operator delete[](void *p, int dummy);
-
+}
 // This transforms 'new Foo(...)' into 'new (1) Foo(...)', which
 // forces a call to the operator new variant with the 'int dummy' arg.
 #define debug_new new (1)

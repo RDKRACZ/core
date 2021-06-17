@@ -20,52 +20,56 @@
 #endif
 
 #include "CharTypes.h"
-
-class GString;
+namespace PdfReader {
+    class GString;
 
 //------------------------------------------------------------------------
 
-class TextString {
-public:
+    class TextString {
+    public:
 
-  // Create an empty TextString.
-  TextString();
+        // Create an empty TextString.
+        TextString();
 
-  // Create a TextString from a PDF text string.
-  TextString(GString *s);
+        // Create a TextString from a PDF text string.
+        TextString(GString *s);
 
-  // Copy a TextString.
-  TextString(TextString *s);
+        // Copy a TextString.
+        TextString(TextString *s);
 
-  ~TextString();
+        ~TextString();
 
-  // Append a Unicode character or PDF text string to this TextString.
-  TextString *append(Unicode c);
-  TextString *append(GString *s);
+        // Append a Unicode character or PDF text string to this TextString.
+        TextString *append(Unicode c);
 
-  // Insert a Unicode character, sequence of Unicode characters, or
-  // PDF text string in this TextString.
-  TextString *insert(int idx, Unicode c);
-  TextString *insert(int idx, Unicode *u2, int n);
-  TextString *insert(int idx, GString *s);
+        TextString *append(GString *s);
 
-  // Get the Unicode characters in the TextString.
-  int getLength() { return len; }
-  Unicode *getUnicode() { return u; }
+        // Insert a Unicode character, sequence of Unicode characters, or
+        // PDF text string in this TextString.
+        TextString *insert(int idx, Unicode c);
 
-  // Create a PDF text string from a TextString.
-  GString *toPDFTextString();
+        TextString *insert(int idx, Unicode *u2, int n);
 
-  // Convert a TextString to UTF-8.
-  GString *toUTF8();
+        TextString *insert(int idx, GString *s);
 
-private:
+        // Get the Unicode characters in the TextString.
+        int getLength() { return len; }
 
-  void expand(int delta);
+        Unicode *getUnicode() { return u; }
 
-  Unicode *u;			// NB: not null-terminated
-  int len;
-  int size;
-};
+        // Create a PDF text string from a TextString.
+        GString *toPDFTextString();
 
+        // Convert a TextString to UTF-8.
+        GString *toUTF8();
+
+    private:
+
+        void expand(int delta);
+
+        Unicode *u;            // NB: not null-terminated
+        int len;
+        int size;
+    };
+}
 #endif

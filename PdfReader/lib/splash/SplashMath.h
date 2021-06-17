@@ -21,7 +21,7 @@
 #  endif
 #endif
 #include "SplashTypes.h"
-
+namespace PdfReader {
 static inline SplashCoord splashAbs(SplashCoord x) {
 #if USE_FIXEDPOINT
   return FixedPoint::abs(x);
@@ -374,5 +374,5 @@ static inline void splashStrokeAdjust(SplashCoord xMin, SplashCoord xMax,
   *xMinI = x0;
   *xMaxI = x1;
 }
-
+}
 #endif

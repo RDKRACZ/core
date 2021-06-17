@@ -22,53 +22,54 @@
 //------------------------------------------------------------------------
 // Array
 //------------------------------------------------------------------------
-
-Array::Array(XRef *xrefA) {
-  xref = xrefA;
-  elems = NULL;
-  size = length = 0;
-  ref = 1;
-}
-
-Array::~Array() {
-  int i;
-
-  for (i = 0; i < length; ++i)
-    elems[i].free();
-  gfree(elems);
-}
-
-void Array::add(Object *elem) {
-  if (length == size) {
-    if (length == 0) {
-      size = 8;
-    } else {
-      size *= 2;
+namespace PdfReader {
+    Array::Array(XRef *xrefA) {
+        xref = xrefA;
+        elems = NULL;
+        size = length = 0;
+        ref = 1;
     }
-    elems = (Object *)greallocn(elems, size, sizeof(Object));
-  }
-  elems[length] = *elem;
-  ++length;
-}
 
-Object *Array::get(int i, Object *obj, int recursion) {
-  if (i < 0 || i >= length) {
-#ifdef DEBUG_MEM
-    abort();
-#else
-    return obj->initNull();
-#endif
-  }
-  return elems[i].fetch(xref, obj, recursion);
-}
+    Array::~Array() {
+        int i;
 
-Object *Array::getNF(int i, Object *obj) {
-  if (i < 0 || i >= length) {
+        for (i = 0; i < length; ++i)
+            elems[i].free();
+        gfree(elems);
+    }
+
+    void Array::add(Object *elem) {
+        if (length == size) {
+            if (length == 0) {
+                size = 8;
+            } else {
+                size *= 2;
+            }
+            elems = (Object *) greallocn(elems, size, sizeof(Object));
+        }
+        elems[length] = *elem;
+        ++length;
+    }
+
+    Object *Array::get(int i, Object *obj, int recursion) {
+        if (i < 0 || i >= length) {
 #ifdef DEBUG_MEM
-    abort();
+            abort();
 #else
-    return obj->initNull();
+            return obj->initNull();
 #endif
-  }
-  return elems[i].copy(obj);
+        }
+        return elems[i].fetch(xref, obj, recursion);
+    }
+
+    Object *Array::getNF(int i, Object *obj) {
+        if (i < 0 || i >= length) {
+#ifdef DEBUG_MEM
+            abort();
+#else
+            return obj->initNull();
+#endif
+        }
+        return elems[i].copy(obj);
+    }
 }

@@ -17,62 +17,84 @@
 
 #include "gtypes.h"
 #include "SplashTypes.h"
+namespace PdfReader {
+    class SplashBitmap;
 
-class SplashBitmap;
-class SplashOutputDev;
-class DisplayState;
-class CachedTileDesc;
-class TileCacheThreadPool;
-class TileDesc;
+    class SplashOutputDev;
+
+    class DisplayState;
+
+    class CachedTileDesc;
+
+    class TileCacheThreadPool;
+
+    class TileDesc;
 
 //------------------------------------------------------------------------
 
-class TileCache {
-public:
+    class TileCache {
+    public:
 
-  TileCache(DisplayState *stateA);
-  ~TileCache();
+        TileCache(DisplayState *stateA);
 
-  // Set the list of currently displayed tiles (TileDesc objects).
-  void setActiveTileList(GList *tiles);
+        ~TileCache();
 
-  // Return the bitmap for a tile.  The tile must be on the current
-  // active list.  This can return NULL if tile rasterization hasn't
-  // started yet.  If <finished> is non-NULL, *<finished> will be set
-  // to true if rasterization of this bitmap is finished, false
-  // otherwise.
-  SplashBitmap *getTileBitmap(TileDesc *tile, GBool *finished);
+        // Set the list of currently displayed tiles (TileDesc objects).
+        void setActiveTileList(GList *tiles);
 
-  // Set a callback to be called whenever a tile rasterization is
-  // finished.  NB: this callback will be called from a worker thread.
-  void setTileDoneCbk(void (*cbk)(void *data), void *data)
-    { tileDoneCbk = cbk; tileDoneCbkData = data; }
+        // Return the bitmap for a tile.  The tile must be on the current
+        // active list.  This can return NULL if tile rasterization hasn't
+        // started yet.  If <finished> is non-NULL, *<finished> will be set
+        // to true if rasterization of this bitmap is finished, false
+        // otherwise.
+        SplashBitmap *getTileBitmap(TileDesc *tile, GBool *finished);
 
-  void paperColorChanged();
-  void reverseVideoChanged();
-  void optionalContentChanged();
-  void docChanged();
-  void forceRedraw();
+        // Set a callback to be called whenever a tile rasterization is
+        // finished.  NB: this callback will be called from a worker thread.
+        void setTileDoneCbk(void (*cbk)(void *data), void *data) {
+            tileDoneCbk = cbk;
+            tileDoneCbkData = data;
+        }
 
-private:
+        void paperColorChanged();
 
-  int findTile(TileDesc *tile, GList *tileList);
-  void cleanCache();
-  void flushCache(GBool wait);
-  void removeTile(CachedTileDesc *ct);
-  GBool hasUnstartedTiles();
-  CachedTileDesc *getUnstartedTile();
-  static void startPageCbk(void *data);
-  void rasterizeTile(CachedTileDesc *tile);
-  static GBool abortCheckCbk(void *data);
+        void reverseVideoChanged();
 
-  DisplayState *state;
-  GList *cache;			// [CachedTileDesc]
-  TileCacheThreadPool *threadPool;
-  void (*tileDoneCbk)(void *data);
-  void *tileDoneCbkData;
+        void optionalContentChanged();
 
-  friend class TileCacheThreadPool;
-};
+        void docChanged();
 
+        void forceRedraw();
+
+    private:
+
+        int findTile(TileDesc *tile, GList *tileList);
+
+        void cleanCache();
+
+        void flushCache(GBool wait);
+
+        void removeTile(CachedTileDesc *ct);
+
+        GBool hasUnstartedTiles();
+
+        CachedTileDesc *getUnstartedTile();
+
+        static void startPageCbk(void *data);
+
+        void rasterizeTile(CachedTileDesc *tile);
+
+        static GBool abortCheckCbk(void *data);
+
+        DisplayState *state;
+        GList *cache;            // [CachedTileDesc]
+        TileCacheThreadPool *threadPool;
+
+        void (*tileDoneCbk)(void *data);
+
+        void *tileDoneCbkData;
+
+        friend class TileCacheThreadPool;
+    };
+}
 #endif

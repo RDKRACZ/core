@@ -34,10 +34,10 @@
 // gUnlockMutex(&m);
 // ...
 // gDestroyMutex(&m);
-
+namespace PdfReader {
 #ifdef _WIN32
 
-typedef CRITICAL_SECTION GMutex;
+    typedef CRITICAL_SECTION GMutex;
 
 #define gInitMutex(m) InitializeCriticalSection(m)
 #define gDestroyMutex(m) DeleteCriticalSection(m)
@@ -46,7 +46,7 @@ typedef CRITICAL_SECTION GMutex;
 
 #else // assume pthreads
 
-typedef pthread_mutex_t GMutex;
+    typedef pthread_mutex_t GMutex;
 
 #define gInitMutex(m) pthread_mutex_init(m, NULL)
 #define gDestroyMutex(m) pthread_mutex_destroy(m)
@@ -60,42 +60,42 @@ typedef pthread_mutex_t GMutex;
 //------------------------------------------------------------------------
 
 // NB: this must be "long" to work on Windows
-typedef long GAtomicCounter;
+    typedef long GAtomicCounter;
 
 // Increment *counter by one and return the final value (after the
 // increment).
-static inline GAtomicCounter gAtomicIncrement(GAtomicCounter *counter) {
-  GAtomicCounter newVal;
+    static inline GAtomicCounter gAtomicIncrement(GAtomicCounter *counter) {
+        GAtomicCounter newVal;
 
 #if defined(_WIN32)
-  newVal = _InterlockedIncrement(counter);
+        newVal = _InterlockedIncrement(counter);
 #elif defined(__GNUC__) || defined(__xlC__)
-  // __GNUC__ also covers LLVM/clang
-  newVal = __sync_add_and_fetch(counter, 1);
+        // __GNUC__ also covers LLVM/clang
+        newVal = __sync_add_and_fetch(counter, 1);
 #elif defined(__SUNPRO_CC)
-  newVal = atomic_inc_ulong_nv((ulong_t *)counter);
+        newVal = atomic_inc_ulong_nv((ulong_t *)counter);
 #else
 #  error "gAtomicIncrement is not defined for this compiler/platform"
 #endif
-  return newVal;
-}
+        return newVal;
+    }
 
 // Decrement *counter by one and return the final value (after the
 // decrement).
-static inline GAtomicCounter gAtomicDecrement(GAtomicCounter *counter) {
-  GAtomicCounter newVal;
+    static inline GAtomicCounter gAtomicDecrement(GAtomicCounter *counter) {
+        GAtomicCounter newVal;
 
 #if defined(_WIN32)
-  newVal = _InterlockedDecrement(counter);
+        newVal = _InterlockedDecrement(counter);
 #elif defined(__GNUC__) || defined(__xlC__)
-  // __GNUC__ also covers LLVM/clang
-  newVal = __sync_sub_and_fetch(counter, 1);
+        // __GNUC__ also covers LLVM/clang
+        newVal = __sync_sub_and_fetch(counter, 1);
 #elif defined(__SUNPRO_CC)
-  newVal = atomic_dec_ulong_nv((ulong_t *)counter);
+        newVal = atomic_dec_ulong_nv((ulong_t *)counter);
 #else
 #  error "gAtomicDecrement is not defined for this compiler/platform"
 #endif
-  return newVal;
+        return newVal;
+    }
 }
-
 #endif // GMUTEX_H

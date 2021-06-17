@@ -20,7 +20,7 @@
 #include "FixedPoint.h"
 
 #define ln2 ((FixedPoint)0.69314718)
-
+namespace PdfReader {
 FixedPoint FixedPoint::sqrt(FixedPoint x) {
   FixedPoint y0, y1, z;
 
@@ -119,8 +119,8 @@ GBool FixedPoint::divCheck(FixedPoint x, FixedPoint y, FixedPoint *result) {
 }
 
 GBool FixedPoint::checkDet(FixedPoint m11, FixedPoint m12,
-			   FixedPoint m21, FixedPoint m22,
-			   FixedPoint epsilon) {
+               FixedPoint m21, FixedPoint m22,
+               FixedPoint epsilon) {
   FixPtInt64 det, e;
 
   det = (FixPtInt64)m11.val * (FixPtInt64)m22.val
@@ -130,5 +130,5 @@ GBool FixedPoint::checkDet(FixedPoint m11, FixedPoint m12,
   // truncated to zero as a fixed point value.
   return det >= e || det <= -e;
 }
-
+}
 #endif // USE_FIXEDPOINT

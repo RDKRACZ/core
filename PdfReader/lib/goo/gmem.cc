@@ -21,7 +21,7 @@
 #  include <windows.h>
 #endif
 #include "gmem.h"
-
+namespace PdfReader {
 #ifdef DEBUG_MEM
 
 typedef struct _GMemHdr {
@@ -393,4 +393,5 @@ char *copyString(const char *s) {
   s1 = (char *)gmalloc((int)strlen(s) + 1);
   strcpy(s1, s);
   return s1;
+}
 }

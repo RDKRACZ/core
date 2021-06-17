@@ -13,7 +13,8 @@
  * These have stupid names to avoid conflicts with some (but not all)
  * C++ compilers which define them.
  */
-typedef int GBool;
+
+    typedef int GBool;
 #define gTrue 1
 #define gFalse 0
 
@@ -21,9 +22,9 @@ typedef int GBool;
  * These have stupid names to avoid conflicts with <sys/types.h>,
  * which on various systems defines some random subset of these.
  */
-typedef unsigned char Guchar;
-typedef unsigned short Gushort;
-typedef unsigned int Guint;
-typedef unsigned long Gulong;
+    typedef unsigned char Guchar;
+    typedef unsigned short Gushort;
+    typedef unsigned int Guint;
+    typedef unsigned long Gulong;
 
 #endif

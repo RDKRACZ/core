@@ -20,13 +20,15 @@
 //------------------------------------------------------------------------
 // SplashFontFileID
 //------------------------------------------------------------------------
+namespace PdfReader {
+    class SplashFontFileID {
+    public:
 
-class SplashFontFileID {
-public:
+        SplashFontFileID();
 
-  SplashFontFileID();
-  virtual ~SplashFontFileID();
-  virtual GBool matches(SplashFontFileID *id) = 0;
-};
+        virtual ~SplashFontFileID();
 
+        virtual GBool matches(SplashFontFileID *id) = 0;
+    };
+}
 #endif

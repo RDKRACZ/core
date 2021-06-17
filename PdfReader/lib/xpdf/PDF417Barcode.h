@@ -14,8 +14,8 @@
 #ifdef USE_GCC_PRAGMAS
 #pragma interface
 #endif
-
-class GString;
+namespace PdfReader {
+    class GString;
 
 // Draw a PDF417 barcode:
 // fieldWidth, fieldHeight = field size (in points)
@@ -24,9 +24,9 @@ class GString;
 // value = byte string
 // output is appended to appearBuf
 // Returns true on success, false on error.
-extern GBool drawPDF417Barcode(double fieldWidth, double fieldHeight,
-			       double moduleWidth, double moduleHeight,
-			       int errorCorrectionLevel, GString *value,
-			       GString *appearBuf);
-
+    extern GBool drawPDF417Barcode(double fieldWidth, double fieldHeight,
+                                   double moduleWidth, double moduleHeight,
+                                   int errorCorrectionLevel, GString *value,
+                                   GString *appearBuf);
+}
 #endif

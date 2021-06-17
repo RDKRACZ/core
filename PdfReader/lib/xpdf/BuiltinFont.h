@@ -16,43 +16,46 @@
 #endif
 
 #include "gtypes.h"
+namespace PdfReader {
+    struct BuiltinFont;
 
-struct BuiltinFont;
-class BuiltinFontWidths;
-
-//------------------------------------------------------------------------
-
-struct BuiltinFont {
-  const char *name;
-  const char **defaultBaseEnc;
-  short missingWidth;
-  short ascent;
-  short descent;
-  short bbox[4];
-  BuiltinFontWidths *widths;
-};
+    class BuiltinFontWidths;
 
 //------------------------------------------------------------------------
 
-struct BuiltinFontWidth {
-  const char *name;
-  Gushort width;
-  BuiltinFontWidth *next;
-};
+    struct BuiltinFont {
+        const char *name;
+        const char **defaultBaseEnc;
+        short missingWidth;
+        short ascent;
+        short descent;
+        short bbox[4];
+        BuiltinFontWidths *widths;
+    };
 
-class BuiltinFontWidths {
-public:
+//------------------------------------------------------------------------
 
-  BuiltinFontWidths(BuiltinFontWidth *widths, int sizeA);
-  ~BuiltinFontWidths();
-  GBool getWidth(const char *name, Gushort *width);
+    struct BuiltinFontWidth {
+        const char *name;
+        Gushort width;
+        BuiltinFontWidth *next;
+    };
 
-private:
+    class BuiltinFontWidths {
+    public:
 
-  int hash(const char *name);
+        BuiltinFontWidths(BuiltinFontWidth *widths, int sizeA);
 
-  BuiltinFontWidth **tab;
-  int size;
-};
+        ~BuiltinFontWidths();
 
+        GBool getWidth(const char *name, Gushort *width);
+
+    private:
+
+        int hash(const char *name);
+
+        BuiltinFontWidth **tab;
+        int size;
+    };
+}
 #endif

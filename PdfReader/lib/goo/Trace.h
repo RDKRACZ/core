@@ -12,7 +12,7 @@
 #define TRACING_H
 
 #include <aconf.h>
-
+namespace PdfReader {
 #if ENABLE_TRACING
 
 // Enter a nesting level.
@@ -39,5 +39,5 @@ static inline void traceFree(void *nestHandle, const char *fmt, ...) {}
 static inline void traceMessage(const char *fmt, ...) {}
 
 #endif // ENABLE_TRACING
-
+}
 #endif // TRACING_H

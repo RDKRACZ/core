@@ -38,7 +38,7 @@ extern "C" int unlink(char *filename);
 #endif
 
 //------------------------------------------------------------------------
-
+namespace PdfReader {
 static void fileWrite(void *stream, const char *data, int len) {
   fwrite(data, 1, len, (FILE *)stream);
 }
@@ -388,5 +388,5 @@ SplashFontFile *SplashFTFontEngine::loadTrueTypeFont(SplashFontFileID *idA,
 #endif
   return ret;
 }
-
+}
 #endif // HAVE_FREETYPE_H

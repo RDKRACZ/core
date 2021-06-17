@@ -45,7 +45,7 @@
 #endif
 
 //------------------------------------------------------------------------
-
+namespace PdfReader {
 GString *getHomeDir() {
 #ifdef VMS
   //---------- VMS ----------
@@ -752,4 +752,5 @@ void fixCommandLine(int *argc, char **argv[]) {
 
   LocalFree(argvw);
 #endif
+}
 }

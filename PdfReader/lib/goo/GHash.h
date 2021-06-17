@@ -16,7 +16,7 @@
 #endif
 
 #include "gtypes.h"
-
+namespace PdfReader {
 class GString;
 struct GHashBucket;
 struct GHashIter;
@@ -74,5 +74,5 @@ private:
       delete _hash;                                \
     }                                              \
   } while(0)
-
+}
 #endif

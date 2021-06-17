@@ -20,10 +20,10 @@
 //------------------------------------------------------------------------
 // SplashPathPoint
 //------------------------------------------------------------------------
-
-struct SplashPathPoint {
-  SplashCoord x, y;
-};
+namespace PdfReader {
+    struct SplashPathPoint {
+        SplashCoord x, y;
+    };
 
 //------------------------------------------------------------------------
 // SplashPath.flags
@@ -46,88 +46,97 @@ struct SplashPathPoint {
 // SplashPathHint
 //------------------------------------------------------------------------
 
-struct SplashPathHint {
-  int ctrl0, ctrl1;
-  int firstPt, lastPt;
-  GBool projectingCap;
-};
+    struct SplashPathHint {
+        int ctrl0, ctrl1;
+        int firstPt, lastPt;
+        GBool projectingCap;
+    };
 
 //------------------------------------------------------------------------
 // SplashPath
 //------------------------------------------------------------------------
 
-class SplashPath {
-public:
+    class SplashPath {
+    public:
 
-  // Create an empty path.
-  SplashPath();
+        // Create an empty path.
+        SplashPath();
 
-  // Copy a path.
-  SplashPath *copy() { return new SplashPath(this); }
+        // Copy a path.
+        SplashPath *copy() { return new SplashPath(this); }
 
-  ~SplashPath();
+        ~SplashPath();
 
-  // Append <path> to <this>.
-  void append(SplashPath *path);
+        // Append <path> to <this>.
+        void append(SplashPath *path);
 
-  // Start a new subpath.
-  SplashError moveTo(SplashCoord x, SplashCoord y);
+        // Start a new subpath.
+        SplashError moveTo(SplashCoord x, SplashCoord y);
 
-  // Add a line segment to the last subpath.
-  SplashError lineTo(SplashCoord x, SplashCoord y);
+        // Add a line segment to the last subpath.
+        SplashError lineTo(SplashCoord x, SplashCoord y);
 
-  // Add a third-order (cubic) Bezier curve segment to the last
-  // subpath.
-  SplashError curveTo(SplashCoord x1, SplashCoord y1,
-		      SplashCoord x2, SplashCoord y2,
-		      SplashCoord x3, SplashCoord y3);
+        // Add a third-order (cubic) Bezier curve segment to the last
+        // subpath.
+        SplashError curveTo(SplashCoord x1, SplashCoord y1,
+                            SplashCoord x2, SplashCoord y2,
+                            SplashCoord x3, SplashCoord y3);
 
-  // Close the last subpath, adding a line segment if necessary.  If
-  // <force> is true, this adds a line segment even if the current
-  // point is equal to the first point in the subpath.
-  SplashError close(GBool force = gFalse);
+        // Close the last subpath, adding a line segment if necessary.  If
+        // <force> is true, this adds a line segment even if the current
+        // point is equal to the first point in the subpath.
+        SplashError close(GBool force = gFalse);
 
-  // Add a stroke adjustment hint.  The controlling segments are
-  // <ctrl0> and <ctrl1> (where segments are identified by their first
-  // point), and the points to be adjusted are <firstPt> .. <lastPt>.
-  // <projectingCap> is true if the points are part of a projecting
-  // line cap.
-  void addStrokeAdjustHint(int ctrl0, int ctrl1, int firstPt, int lastPt,
-			   GBool projectingCap = gFalse);
+        // Add a stroke adjustment hint.  The controlling segments are
+        // <ctrl0> and <ctrl1> (where segments are identified by their first
+        // point), and the points to be adjusted are <firstPt> .. <lastPt>.
+        // <projectingCap> is true if the points are part of a projecting
+        // line cap.
+        void addStrokeAdjustHint(int ctrl0, int ctrl1, int firstPt, int lastPt,
+                                 GBool projectingCap = gFalse);
 
-  // Add (<dx>, <dy>) to every point on this path.
-  void offset(SplashCoord dx, SplashCoord dy);
+        // Add (<dx>, <dy>) to every point on this path.
+        void offset(SplashCoord dx, SplashCoord dy);
 
-  // Get the points on the path.
-  int getLength() { return length; }
-  void getPoint(int i, SplashCoord *x, SplashCoord *y, Guchar *f)
-    { *x = pts[i].x; *y = pts[i].y; *f = flags[i]; }
+        // Get the points on the path.
+        int getLength() { return length; }
 
-  // Get the current point.
-  GBool getCurPt(SplashCoord *x, SplashCoord *y);
+        void getPoint(int i, SplashCoord *x, SplashCoord *y, Guchar *f) {
+            *x = pts[i].x;
+            *y = pts[i].y;
+            *f = flags[i];
+        }
 
-  // Returns true if the path contains one or more zero length
-  // subpaths.
-  GBool containsZeroLengthSubpaths();
+        // Get the current point.
+        GBool getCurPt(SplashCoord *x, SplashCoord *y);
 
-private:
+        // Returns true if the path contains one or more zero length
+        // subpaths.
+        GBool containsZeroLengthSubpaths();
 
-  SplashPath(SplashPath *path);
-  void grow(int nPts);
-  GBool noCurrentPoint() { return curSubpath == length; }
-  GBool onePointSubpath() { return curSubpath == length - 1; }
-  GBool openSubpath() { return curSubpath < length - 1; }
+    private:
 
-  SplashPathPoint *pts;		// array of points
-  Guchar *flags;		// array of flags
-  int length, size;		// length/size of the pts and flags arrays
-  int curSubpath;		// index of first point in last subpath
+        SplashPath(SplashPath *path);
 
-  SplashPathHint *hints;	// list of hints
-  int hintsLength, hintsSize;
+        void grow(int nPts);
 
-  friend class SplashXPath;
-  friend class Splash;
-};
+        GBool noCurrentPoint() { return curSubpath == length; }
 
+        GBool onePointSubpath() { return curSubpath == length - 1; }
+
+        GBool openSubpath() { return curSubpath < length - 1; }
+
+        SplashPathPoint *pts;        // array of points
+        Guchar *flags;        // array of flags
+        int length, size;        // length/size of the pts and flags arrays
+        int curSubpath;        // index of first point in last subpath
+
+        SplashPathHint *hints;    // list of hints
+        int hintsLength, hintsSize;
+
+        friend class SplashXPath;
+
+        friend class Splash;
+    };
+}
 #endif

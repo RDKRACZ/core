@@ -43,46 +43,56 @@
 #include "../DesktopEditor/common/officedrawingfile.h"
 #include "../DesktopEditor/graphics/pro/Fonts.h"
 
-namespace PdfReader
-{
+namespace PdfReader {
     class CPdfReader_Private;
-    class PDFREADER_DECL_EXPORT CPdfReader : public IOfficeDrawingFile
-	{
-	public:
 
-        CPdfReader(NSFonts::IApplicationFonts* fonts);
+    class PDFREADER_DECL_EXPORT CPdfReader : public IOfficeDrawingFile {
+    public:
+
+        CPdfReader(NSFonts::IApplicationFonts *fonts);
+
         virtual ~CPdfReader();
 
-        virtual bool LoadFromFile(const std::wstring& file, const std::wstring& options = L"",
-                                        const std::wstring& owner_password = L"", const std::wstring& user_password = L"");
+        virtual bool LoadFromFile(const std::wstring &file, const std::wstring &options = L"",
+                                  const std::wstring &owner_password = L"", const std::wstring &user_password = L"");
 
         virtual void Close();
 
         virtual std::wstring GetTempDirectory();
-        virtual void SetTempDirectory(const std::wstring& directory);
+
+        virtual void SetTempDirectory(const std::wstring &directory);
 
         virtual int GetPagesCount();
-        virtual void GetPageInfo(int nPageIndex, double* pdWidth, double* pdHeight, double* pdDpiX, double* pdDpiY);
-        virtual void DrawPageOnRenderer(IRenderer* pRenderer, int nPageIndex, bool* pBreak);
-        virtual void ConvertToRaster(int nPageIndex, const std::wstring& path, int nImageType, const int nRasterW = -1, const int nRasterH = -1);
 
-        EError       GetError();
-        double       GetVersion();
-        int          GetPermissions();
-		std::wstring GetPageLabel(int nPageIndex);
+        virtual void GetPageInfo(int nPageIndex, double *pdWidth, double *pdHeight, double *pdDpiX, double *pdDpiY);
 
-        bool         ExtractAllImages(const wchar_t* wsDstPath, const wchar_t* wsPrefix = 0);
-		int          GetImagesCount();
+        virtual void DrawPageOnRenderer(IRenderer *pRenderer, int nPageIndex, bool *pBreak);
 
-        void         SetCMapFolder(const wchar_t* wsCMapFolder);
-        NSFonts::IFontManager* GetFontManager();
+        virtual void ConvertToRaster(int nPageIndex, const std::wstring &path, int nImageType, const int nRasterW = -1,
+                                     const int nRasterH = -1);
 
-		std::wstring ToXml(const std::wstring& wsXmlPath);
-				     
-	private:
-        CPdfReader_Private* m_pInternal;
-        EError              m_eError;
-	};
+        EError GetError();
+
+        double GetVersion();
+
+        int GetPermissions();
+
+        std::wstring GetPageLabel(int nPageIndex);
+
+        bool ExtractAllImages(const wchar_t *wsDstPath, const wchar_t *wsPrefix = 0);
+
+        int GetImagesCount();
+
+        void SetCMapFolder(const wchar_t *wsCMapFolder);
+
+        NSFonts::IFontManager *GetFontManager();
+
+        std::wstring ToXml(const std::wstring &wsXmlPath);
+
+    private:
+        CPdfReader_Private *m_pInternal;
+        EError m_eError;
+    };
 }
-
+}
 #endif // _PDF_READER_H

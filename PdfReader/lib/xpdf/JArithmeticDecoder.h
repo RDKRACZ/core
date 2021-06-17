@@ -18,97 +18,114 @@
 #endif
 
 #include "gtypes.h"
-
-class Stream;
+namespace PdfReader {
+    class Stream;
 
 //------------------------------------------------------------------------
 // JArithmeticDecoderStats
 //------------------------------------------------------------------------
 
-class JArithmeticDecoderStats {
-public:
+    class JArithmeticDecoderStats {
+    public:
 
-  JArithmeticDecoderStats(int contextSizeA);
-  ~JArithmeticDecoderStats();
-  JArithmeticDecoderStats *copy();
-  void reset();
-  int getContextSize() { return contextSize; }
-  void copyFrom(JArithmeticDecoderStats *stats);
-  void setEntry(Guint cx, int i, int mps);
+        JArithmeticDecoderStats(int contextSizeA);
 
-private:
+        ~JArithmeticDecoderStats();
 
-  Guchar *cxTab;		// cxTab[cx] = (i[cx] << 1) + mps[cx]
-  int contextSize;
+        JArithmeticDecoderStats *copy();
 
-  friend class JArithmeticDecoder;
-};
+        void reset();
+
+        int getContextSize() { return contextSize; }
+
+        void copyFrom(JArithmeticDecoderStats *stats);
+
+        void setEntry(Guint cx, int i, int mps);
+
+    private:
+
+        Guchar *cxTab;        // cxTab[cx] = (i[cx] << 1) + mps[cx]
+        int contextSize;
+
+        friend class JArithmeticDecoder;
+    };
 
 //------------------------------------------------------------------------
 // JArithmeticDecoder
 //------------------------------------------------------------------------
 
-class JArithmeticDecoder {
-public:
+    class JArithmeticDecoder {
+    public:
 
-  JArithmeticDecoder();
-  ~JArithmeticDecoder();
+        JArithmeticDecoder();
 
-  void setStream(Stream *strA)
-    { str = strA; dataLen = 0; limitStream = gFalse; }
-  void setStream(Stream *strA, int dataLenA)
-    { str = strA; dataLen = dataLenA; limitStream = gTrue; }
+        ~JArithmeticDecoder();
 
-  // Start decoding on a new stream.  This fills the byte buffers and
-  // runs INITDEC.
-  void start();
+        void setStream(Stream *strA) {
+            str = strA;
+            dataLen = 0;
+            limitStream = gFalse;
+        }
 
-  // Restart decoding on an interrupted stream.  This refills the
-  // buffers if needed, but does not run INITDEC.  (This is used in
-  // JPEG 2000 streams when codeblock data is split across multiple
-  // packets/layers.)
-  void restart(int dataLenA);
+        void setStream(Stream *strA, int dataLenA) {
+            str = strA;
+            dataLen = dataLenA;
+            limitStream = gTrue;
+        }
 
-  // Read any leftover data in the stream.
-  void cleanup();
+        // Start decoding on a new stream.  This fills the byte buffers and
+        // runs INITDEC.
+        void start();
 
-  // Decode one bit.
-  int decodeBit(Guint context, JArithmeticDecoderStats *stats);
+        // Restart decoding on an interrupted stream.  This refills the
+        // buffers if needed, but does not run INITDEC.  (This is used in
+        // JPEG 2000 streams when codeblock data is split across multiple
+        // packets/layers.)
+        void restart(int dataLenA);
 
-  // Decode eight bits.
-  int decodeByte(Guint context, JArithmeticDecoderStats *stats);
+        // Read any leftover data in the stream.
+        void cleanup();
 
-  // Returns false for OOB, otherwise sets *<x> and returns true.
-  GBool decodeInt(int *x, JArithmeticDecoderStats *stats);
+        // Decode one bit.
+        int decodeBit(Guint context, JArithmeticDecoderStats *stats);
 
-  Guint decodeIAID(Guint codeLen,
-		   JArithmeticDecoderStats *stats);
+        // Decode eight bits.
+        int decodeByte(Guint context, JArithmeticDecoderStats *stats);
 
-  void resetByteCounter() { nBytesRead = 0; }
-  Guint getByteCounter() { return nBytesRead; }
+        // Returns false for OOB, otherwise sets *<x> and returns true.
+        GBool decodeInt(int *x, JArithmeticDecoderStats *stats);
 
-private:
+        Guint decodeIAID(Guint codeLen,
+                         JArithmeticDecoderStats *stats);
 
-  Guint readByte();
-  int decodeIntBit(JArithmeticDecoderStats *stats);
-  void byteIn();
+        void resetByteCounter() { nBytesRead = 0; }
 
-  static Guint qeTab[47];
-  static int nmpsTab[47];
-  static int nlpsTab[47];
-  static int switchTab[47];
+        Guint getByteCounter() { return nBytesRead; }
 
-  Guint buf0, buf1;
-  Guint c, a;
-  int ct;
+    private:
 
-  Guint prev;			// for the integer decoder
+        Guint readByte();
 
-  Stream *str;
-  Guint nBytesRead;
-  int dataLen;
-  GBool limitStream;
-  int readBuf;
-};
+        int decodeIntBit(JArithmeticDecoderStats *stats);
 
+        void byteIn();
+
+        static Guint qeTab[47];
+        static int nmpsTab[47];
+        static int nlpsTab[47];
+        static int switchTab[47];
+
+        Guint buf0, buf1;
+        Guint c, a;
+        int ct;
+
+        Guint prev;            // for the integer decoder
+
+        Stream *str;
+        Guint nBytesRead;
+        int dataLen;
+        GBool limitStream;
+        int readBuf;
+    };
+}
 #endif

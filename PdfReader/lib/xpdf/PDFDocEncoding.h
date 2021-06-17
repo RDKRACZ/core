@@ -10,7 +10,7 @@
 #define PDFDOCENCODING_H
 
 #include "CharTypes.h"
-
-extern Unicode pdfDocEncoding[256];
-
+namespace PdfReader {
+    extern Unicode pdfDocEncoding[256];
+}
 #endif

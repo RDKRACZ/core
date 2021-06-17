@@ -18,9 +18,10 @@
 //------------------------------------------------------------------------
 // SplashFontFileID
 //------------------------------------------------------------------------
+namespace PdfReader {
+    SplashFontFileID::SplashFontFileID() {
+    }
 
-SplashFontFileID::SplashFontFileID() {
-}
-
-SplashFontFileID::~SplashFontFileID() {
+    SplashFontFileID::~SplashFontFileID() {
+    }
 }

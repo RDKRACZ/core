@@ -26,7 +26,7 @@
 #define fixptShift 16
 #define fixptMaskL ((1 << fixptShift) - 1)
 #define fixptMaskH (~fixptMaskL)
-
+namespace PdfReader {
 typedef long long FixPtInt64;
 
 class FixedPoint {
@@ -174,7 +174,7 @@ private:
 
   int val;		   // fixed point: (n-fixptShift).(fixptShift)
 };
-
+}
 #endif // USE_FIXEDPOINT
 
 #endif

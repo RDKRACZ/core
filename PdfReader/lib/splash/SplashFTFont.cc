@@ -29,7 +29,7 @@
 #include "SplashFTFont.h"
 
 //------------------------------------------------------------------------
-
+namespace PdfReader {
 static int glyphPathMoveTo(const FT_Vector *pt, void *path);
 static int glyphPathLineTo(const FT_Vector *pt, void *path);
 static int glyphPathConicTo(const FT_Vector *ctrl, const FT_Vector *pt,
@@ -456,5 +456,5 @@ static int glyphPathCubicTo(const FT_Vector *ctrl1, const FT_Vector *ctrl2,
   p->needClose = gTrue;
   return 0;
 }
-
+}
 #endif // HAVE_FREETYPE_H

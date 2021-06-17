@@ -47,10 +47,13 @@ SOURCES -= \
     $$PWD/lib/xpdf/pdftopng.cc \
     $$PWD/lib/xpdf/pdftoppm.cc \
     $$PWD/lib/xpdf/pdftops.cc \
-    $$PWD/lib/xpdf/pdftotext.cc
+    $$PWD/lib/xpdf/pdftotext.cc \
+    $$PWD/lib/xpdf/pdfimages.cc \
+    $$PWD/lib/xpdf/pdfdetatch.cc \
+    $$PWD/lib/xpdf/pdfinfo.cc \ 
+    $$PWD/lib/xpdf/pdffonts.cc
 
 SOURCES += \
-    Src/RendererOutputDev.cpp \
     PdfReader.cpp
 
 HEADERS +=\
@@ -68,5 +71,4 @@ HEADERS +=\
     Resources/Fontn022023l.h \
     Resources/Fontn022024l.h \
     Resources/Fonts050000l.h \
-    Src/RendererOutputDev.h \
     PdfReader.h

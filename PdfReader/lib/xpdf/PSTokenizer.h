@@ -18,24 +18,27 @@
 #include "gtypes.h"
 
 //------------------------------------------------------------------------
+namespace PdfReader {
+    class PSTokenizer {
+    public:
 
-class PSTokenizer {
-public:
+        PSTokenizer(int (*getCharFuncA)(void *), void *dataA);
 
-  PSTokenizer(int (*getCharFuncA)(void *), void *dataA);
-  ~PSTokenizer();
+        ~PSTokenizer();
 
-  // Get the next PostScript token.  Returns false at end-of-stream.
-  GBool getToken(char *buf, int size, int *length);
+        // Get the next PostScript token.  Returns false at end-of-stream.
+        GBool getToken(char *buf, int size, int *length);
 
-private:
+    private:
 
-  int lookChar();
-  int getChar();
+        int lookChar();
 
-  int (*getCharFunc)(void *);
-  void *data;
-  int charBuf;
-};
+        int getChar();
 
+        int (*getCharFunc)(void *);
+
+        void *data;
+        int charBuf;
+    };
+}
 #endif

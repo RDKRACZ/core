@@ -20,6 +20,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "gtypes.h"
+namespace PdfReader {
 class GString;
 
 class SplashFontFile;
@@ -93,7 +94,7 @@ private:
   friend class SplashFTFontFile;
   friend class SplashFTFont;
 };
-
+}
 #endif // HAVE_FREETYPE_H
 
 #endif

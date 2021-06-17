@@ -86,7 +86,7 @@
 #define ttcfTag 0x74746366
 
 //------------------------------------------------------------------------
-
+namespace PdfReader {
 struct TrueTypeTable {
   Guint tag;
   Guint checksum;
@@ -2458,4 +2458,5 @@ int FoFiTrueType::seekTable(const char *tag) {
     }
   }
   return -1;
+}
 }

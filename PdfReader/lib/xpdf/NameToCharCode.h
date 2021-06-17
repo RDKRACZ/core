@@ -16,27 +16,29 @@
 #endif
 
 #include "CharTypes.h"
-
-struct NameToCharCodeEntry;
+namespace PdfReader {
+    struct NameToCharCodeEntry;
 
 //------------------------------------------------------------------------
 
-class NameToCharCode {
-public:
+    class NameToCharCode {
+    public:
 
-  NameToCharCode();
-  ~NameToCharCode();
+        NameToCharCode();
 
-  void add(const char *name, CharCode c);
-  CharCode lookup(const char *name);
+        ~NameToCharCode();
 
-private:
+        void add(const char *name, CharCode c);
 
-  int hash(const char *name);
+        CharCode lookup(const char *name);
 
-  NameToCharCodeEntry *tab;
-  int size;
-  int len;
-};
+    private:
 
+        int hash(const char *name);
+
+        NameToCharCodeEntry *tab;
+        int size;
+        int len;
+    };
+}
 #endif

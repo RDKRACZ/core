@@ -29,15 +29,15 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-#include "GState.h"
-#include "GFont.h"
+#include "../lib/xpdf/GfxState.h"
+#include "../lib/xpdf/GfxFont.h"
 #include "File.h"
-#include "CMap.h"
-#include "Dict.h"
-#include "Stream.h"
+#include "../lib/xpdf/CMap.h"
+#include "../lib/xpdf/Dict.h"
+#include "../lib/xpdf/Stream.h"
 #include "FontFileTrueType.h"
 #include "FontFileType1C.h"
-#include "CharCodeToUnicode.h"
+#include "../lib/xpdf/CharCodeToUnicode.h"
 #include "RendererOutputDev.h"
 #include "XmlUtils.h"
 
@@ -434,7 +434,7 @@ namespace PdfReader
         if (m_pTransparentGroupSoftMask)
             delete[]m_pTransparentGroupSoftMask;
     }
-    void RendererOutputDev::StartPage(int nPageIndex, GrState *pGState)
+    void RendererOutputDev::StartPage(int nPageIndex, GfxState *pGState)
     {
         m_pRenderer->BeginCommand(c_nPageType);
 
@@ -459,18 +459,18 @@ namespace PdfReader
     {
         m_pRenderer->EndCommand(c_nPageType);
     }
-    void RendererOutputDev::SaveGState(GrState *pGState)
+    void RendererOutputDev::SaveGState(GfxState *pGState)
     {
         UpdateAll(pGState);
     }
-    void RendererOutputDev::RestoreGState(GrState *pGState)
+    void RendererOutputDev::RestoreGState(GfxState *pGState)
     {
         UpdateAll(pGState);
     }
-    void RendererOutputDev::UpdateCTM(GrState *pGState, double dMatrix11, double dMatrix12, double dMatrix21, double dMatrix22, double dMatrix31, double dMatrix32)
+    void RendererOutputDev::UpdateCTM(GfxState *pGState, double dMatrix11, double dMatrix12, double dMatrix21, double dMatrix22, double dMatrix31, double dMatrix32)
     {
     }
-    void RendererOutputDev::UpdateLineDash(GrState *pGState)
+    void RendererOutputDev::UpdateLineDash(GfxState *pGState)
     {
         double *pDash  = NULL;
         int     nSize  = 0;
@@ -494,10 +494,10 @@ namespace PdfReader
             m_pRenderer->put_PenDashOffset(PDFCoordsToMM(dStart));
         }
     }
-    void RendererOutputDev::UpdateFlatness(GrState *pGState)
+    void RendererOutputDev::UpdateFlatness(GfxState *pGState)
     {
     }
-    void RendererOutputDev::UpdateLineJoin(GrState *pGState)
+    void RendererOutputDev::UpdateLineJoin(GfxState *pGState)
     {
         int nJoinStyle = pGState->GetLineJoin();
         if (1 == nJoinStyle)
@@ -507,7 +507,7 @@ namespace PdfReader
 
         m_pRenderer->put_PenLineJoin(nJoinStyle);
     }
-    void RendererOutputDev::UpdateLineCap(GrState *pGState)
+    void RendererOutputDev::UpdateLineCap(GfxState *pGState)
     {
         int nCapStyle = pGState->GetLineCap();
         if (1 == nCapStyle)
@@ -518,48 +518,48 @@ namespace PdfReader
         m_pRenderer->put_PenLineStartCap(nCapStyle);
         m_pRenderer->put_PenLineEndCap(nCapStyle);
     }
-    void RendererOutputDev::UpdateMiterLimit(GrState *pGState)
+    void RendererOutputDev::UpdateMiterLimit(GfxState *pGState)
     {
     }
-    void RendererOutputDev::UpdateLineWidth(GrState *pGState)
+    void RendererOutputDev::UpdateLineWidth(GfxState *pGState)
     {
         m_pRenderer->put_PenSize(PDFCoordsToMM(pGState->GetLineWidth()));
     }
-    void RendererOutputDev::UpdateStrokeAdjust(GrState *pGState)
+    void RendererOutputDev::UpdateStrokeAdjust(GfxState *pGState)
     {
     }
-    void RendererOutputDev::UpdateFillColor(GrState *pGState)
+    void RendererOutputDev::UpdateFillColor(GfxState *pGState)
     {
-        GrColor *pColor = pGState->GetFillColor();
-        GrColorSpace *pColorSpace = pGState->GetFillColorSpace();
+        GfxColor *pColor = pGState->GetFillColor();
+        GfxColorSpace *pColorSpace = pGState->GetFillColorSpace();
 
         DWORD dwColor = pColorSpace->GetDwordColor(pColor);
 
         m_pRenderer->put_BrushColor1(dwColor);
         m_pRenderer->put_BrushColor2(dwColor);
     }
-    void RendererOutputDev::UpdateStrokeColor(GrState *pGState)
+    void RendererOutputDev::UpdateStrokeColor(GfxState *pGState)
     {
-        GrColor *pColor = pGState->GetStrokeColor();
-        GrColorSpace *pColorSpace = pGState->GetStrokeColorSpace();
+        GfxColor *pColor = pGState->GetStrokeColor();
+        GfxColorSpace *pColorSpace = pGState->GetStrokeColorSpace();
 
         DWORD dwColor = pColorSpace->GetDwordColor(pColor);
 
         m_pRenderer->put_PenColor(dwColor);
     }
-    void RendererOutputDev::UpdateBlendMode(GrState *pGState)
+    void RendererOutputDev::UpdateBlendMode(GfxState *pGState)
     {
     }
-    void RendererOutputDev::UpdateFillOpacity(GrState *pGState)
+    void RendererOutputDev::UpdateFillOpacity(GfxState *pGState)
     {
         m_pRenderer->put_BrushAlpha1(min(255, max(0, int(pGState->GetFillOpacity() * 255))));
         m_pRenderer->put_BrushAlpha2(min(255, max(0, int(pGState->GetFillOpacity() * 255))));
     }
-    void RendererOutputDev::UpdateStrokeOpacity(GrState *pGState)
+    void RendererOutputDev::UpdateStrokeOpacity(GfxState *pGState)
     {
         m_pRenderer->put_PenAlpha(min(255, max(0, int(pGState->GetStrokeOpacity() * 255))));
     }
-    void RendererOutputDev::UpdateAll(GrState *pGState)
+    void RendererOutputDev::UpdateAll(GfxState *pGState)
     {
         UpdateCTM(pGState, pGState->GetCTM()[0], pGState->GetCTM()[1], pGState->GetCTM()[2], pGState->GetCTM()[3], pGState->GetCTM()[4], pGState->GetCTM()[5]);
         UpdateLineDash(pGState);
@@ -579,11 +579,11 @@ namespace PdfReader
         UpdateFont(pGState);
         UpdateClip(pGState);
     }
-    void RendererOutputDev::UpdateRender(GrState *pGState)
+    void RendererOutputDev::UpdateRender(GfxState *pGState)
     {
 
     }
-    void RendererOutputDev::UpdateFont(GrState *pGState)
+    void RendererOutputDev::UpdateFont(GfxState *pGState)
     {
         // Проверяем наличие списка со шрифтами
         if (NULL == m_pFontList)
@@ -2441,7 +2441,7 @@ namespace PdfReader
             m_pRenderer->put_FontName(wsFontName);
         }
     }
-    void RendererOutputDev::Stroke(GrState *pGState)
+    void RendererOutputDev::Stroke(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2454,7 +2454,7 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPathType);
     }
-    void RendererOutputDev::Fill(GrState *pGState)
+    void RendererOutputDev::Fill(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2467,7 +2467,7 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPathType);
     }
-    void RendererOutputDev::EoFill(GrState *pGState)
+    void RendererOutputDev::EoFill(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2480,7 +2480,7 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPathType);
     }
-    void RendererOutputDev::FillStroke(GrState *pGState)
+    void RendererOutputDev::FillStroke(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2493,7 +2493,7 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPathType);
     }
-    void RendererOutputDev::EoFillStroke(GrState *pGState)
+    void RendererOutputDev::EoFillStroke(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2506,11 +2506,11 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPathType);
     }
-    void RendererOutputDev::TilingPatternFill(GrState *pGState, Object *pStream, int nPaintType, Dict *pResourcesDict, double *pMatrix, double *pBBox, int nX0, int nY0, int nX1, int nY1, double dXStep, double dYStep)
+    void RendererOutputDev::TilingPatternFill(GfxState *pGState, Object *pStream, int nPaintType, Dict *pResourcesDict, double *pMatrix, double *pBBox, int nX0, int nY0, int nX1, int nY1, double dXStep, double dYStep)
     {
 
     }
-    void RendererOutputDev::StartTilingFill(GrState *pGState)
+    void RendererOutputDev::StartTilingFill(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2526,268 +2526,268 @@ namespace PdfReader
         m_pRenderer->EndCommand(c_nComplexFigureType);
         m_bTiling = false;
     }
-	bool RendererOutputDev::FunctionShadedFill(GrState *pGState, GrFunctionShading *pShading)
-	{
-		if (m_bDrawOnlyText)
-			return true;
-
-		if (m_bTransparentGroupSoftMask)
-			return true;
-
-        DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
-		long brush;
-		int alpha = pGState->GetFillOpacity() * 255;
-		m_pRenderer->get_BrushType(&brush);
-		m_pRenderer->put_BrushType(c_BrushTypeMyTestGradient);
-		double x1,x2,y1,y2;
-		pShading->GetDomain(&x1, &y1, &x2, &y2);
-		std::vector<float> mapping(6);
-		for (int i = 0; i < 6; i++)
-		{
-			mapping[i] = PDFCoordsToMM(pShading->GetMatrix()[i]);
-		}
-		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_functional(x1, x2, y1, y2, mapping);
-
-		float cur_x = 0, cur_y = 0;
-		float delta_x = (x2 - x1) / info.shading.function.get_resolution();
-		float delta_y = (y2 - y1) / info.shading.function.get_resolution();
-        GrColorSpace *ColorSpace = pShading->GetColorSpace();
-
-		for (size_t i = 0; i < info.shading.function.get_resolution(); i++)
-        {
-		    cur_x = 0;
-            for (size_t j = 0; j < info.shading.function.get_resolution(); j++)
-            {
-                PdfReader::GrColor c;
-                pShading->GetColor(cur_x, cur_y, &c);
-                DWORD dword_color = ColorSpace->GetDwordColor(&c);
-                info.shading.function.set_color(j, i, (dword_color >> 16) & 0xFF,
-                                                (dword_color >> 8) & 0xFF, (dword_color >> 0) & 0xFF, alpha);
-                cur_x += delta_x;
-            }
-            cur_y += delta_y;
-        }
-
-		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
-		{
-			GRenderer->put_BrushGradInfo(info);
-			m_pRenderer->DrawPath(c_nWindingFillMode);
-		}
-
-		m_pRenderer->EndCommand(c_nPathType);
-		m_pRenderer->put_BrushType(brush);
-
-		return true;
-	}
-	bool RendererOutputDev::AxialShadedFill(GrState *pGState, GrAxialShading *pShading)
-	{
-		if (m_bDrawOnlyText)
-			return true;
-
-		if (m_bTransparentGroupSoftMask)
-			return true;
-
-		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
-
-		long brush;
-		int alpha = pGState->GetFillOpacity() * 255;
-		m_pRenderer->get_BrushType(&brush);
-		m_pRenderer->put_BrushType(c_BrushTypePathNewLinearGradient);
-
-		double x1, x2, y1, y2;
-		double t0, t1;
-		pShading->GetCoords(&x1, &y1, &x2, &y2);
-		t0 = pShading->GetDomain0();
-		t1 = pShading->GetDomain1();
-
-        x1 = PDFCoordsToMM(x1);
-        x2 = PDFCoordsToMM(x2);
-        y1 = PDFCoordsToMM(y1);
-        y2 = PDFCoordsToMM(y2);
-
-		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_linear({x1, y1}, {x2, y2}, t0, t1,
-															   pShading->GetExtendStart(), pShading->GetExtendEnd());
-
-		GrColorSpace *ColorSpace = pShading->GetColorSpace();
-		float delta = (t1 - t0) / info.shading.function.get_resolution();
-		float t = t0;
-		for (size_t i = 0; i < info.shading.function.get_resolution(); i++)
-		{
-			PdfReader::GrColor c;
-			pShading->GetColor(t, &c);
-			t+=delta;
-			DWORD dword_color = ColorSpace->GetDwordColor(&c);
-			info.shading.function.set_color(i, (dword_color >> 16) & 0xFF,
-											(dword_color >> 8) & 0xFF, (dword_color >> 0) & 0xFF, alpha);
-		}
-
-		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
-		{
-			GRenderer->put_BrushGradInfo(info);
-			m_pRenderer->DrawPath(c_nWindingFillMode);
-		}
-
-		m_pRenderer->EndCommand(c_nPathType);
-		m_pRenderer->put_BrushType(brush);
-
-		return true;
-	}
-	bool RendererOutputDev::RadialShadedFill(GrState *pGState, GrRadialShading *pShading)
-	{
-		if (m_bDrawOnlyText)
-			return true;
-
-		if (m_bTransparentGroupSoftMask)
-			return true;
-
-		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
-
-		long brush;
-		int alpha = pGState->GetFillOpacity() * 255;
-		m_pRenderer->get_BrushType(&brush);
-		m_pRenderer->put_BrushType(c_BrushTypePathRadialGradient);
-
-		double x1, x2, y1, y2, r1, r2;
-		double t0, t1;
-		pShading->GetCoords(&x1, &y1, &r1, &x2, &y2, &r2);
-		t0 = pShading->GetDomain0();
-		t1 = pShading->GetDomain1();
-
-		double xdpi;
-		m_pRenderer->get_DpiX(&xdpi);
-
-		x1 = PDFCoordsToMM(x1);
-        x2 = PDFCoordsToMM(x2);
-        y1 = PDFCoordsToMM(y1);
-        y2 = PDFCoordsToMM(y2);
-        r1 = PDFCoordsToMM(r1);
-        r2 = PDFCoordsToMM(r2);
-
-		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_radial({x1, y1}, {x2, y2}, r1, r2,
-															   t0, t1, pShading->GetExtendFirst(), pShading->GetExtendSecond());
-
-		GrColorSpace *ColorSpace = pShading->GetColorSpace();;
-		float delta = (t1 - t0) / info.shading.function.get_resolution();
-		float t = t0;
-		for (size_t i = 0; i < info.shading.function.get_resolution(); i++, t += delta)
-		{
-			PdfReader::GrColor c;
-			pShading->GetColor(t, &c);
-			DWORD dword_color = ColorSpace->GetDwordColor(&c);
-			info.shading.function.set_color(i, (dword_color >> 16) & 0xFF,
-											(dword_color >> 8) & 0xFF, (dword_color >> 0) & 0xFF, alpha);
-		}
-
-		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
-		{
-			GRenderer->put_BrushGradInfo(info);
-			m_pRenderer->DrawPath(c_nWindingFillMode);
-		}
-		m_pRenderer->EndCommand(c_nPathType);
-		m_pRenderer->put_BrushType(brush);
-
-		return true;
-	}
-	bool RendererOutputDev::GouraundTriangleFill(GrState *pGState, const std::vector<GrColor*> &colors, const std::vector<NSStructures::Point> &points)
-	{
-		if (m_bDrawOnlyText)
-			return true;
-
-		if (m_bTransparentGroupSoftMask)
-			return true;
-
-		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
-
-		long brush;
-		int alpha = pGState->GetFillOpacity() * 255;
-		m_pRenderer->get_BrushType(&brush);
-		m_pRenderer->put_BrushType(c_BrushTypeTriagnleMeshGradient);
-
-		std::vector<NSStructures::Point> pixel_points;
-		std::vector<agg::rgba8> rgba8_colors;
-		GrCalRGBColorSpace ColorSpace;
-
-		for (int i = 0; i < 3; i++)
-		{
-			GrColor c = *colors[i];
-			DWORD dword_color = ColorSpace.GetDwordColor(&c);
-			rgba8_colors.push_back({dword_color & 0xFF, (dword_color >> 8) & 0xFF, (dword_color >> 16) & 0xFF, (unsigned)alpha});
-			double x = points[i].x;
-			double y = points[i].y;
-			x = PDFCoordsToMM(x);
-            y = PDFCoordsToMM(y);
-			pixel_points.push_back({x, y});
-		}
-
-		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_triangle(pixel_points, rgba8_colors, {}, false);
-
-		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
-		{
-			GRenderer->put_BrushGradInfo(info);
-			m_pRenderer->DrawPath(c_nWindingFillMode);
-		}
-
-		m_pRenderer->EndCommand(c_nPathType);
-		m_pRenderer->put_BrushType(brush);
-		return true;
-	}
-	bool RendererOutputDev::PatchMeshFill(GrState *pGState, PdfReader::GrPatch *patch)
-	{
-		if (m_bDrawOnlyText)
-			return true;
-
-		if (m_bTransparentGroupSoftMask)
-			return true;
-
-		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
-
-		long brush;
-		int alpha = pGState->GetFillOpacity() * 255;
-		m_pRenderer->get_BrushType(&brush);
-		m_pRenderer->put_BrushType(c_BrushTypeTensorCurveGradient);
-
-		std::vector<std::vector<NSStructures::Point>> points(4, std::vector<NSStructures::Point>(4));
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				double x = patch->arrX[i][j];
-				double y = patch->arrY[i][j];
-
-				x = PDFCoordsToMM(x);
-                y = PDFCoordsToMM(y);
-				points[i][j].x = x;
-				points[i][j].y = y;
-			}
-		}
-		std::vector<std::vector<agg::rgba8>> colors(2, std::vector<agg::rgba8>(2));
-		GrDeviceRGBColorSpace ColorSpace;
-		for (int i = 0; i < 2; i ++)
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				DWORD dcolor = ColorSpace.GetDwordColor(&patch->arrColor[i][j]);
-				colors[j][i] = {(unsigned)((dcolor >> 16)  & 0xFF), (unsigned)((dcolor >> 8) & 0xFF), (unsigned)((dcolor >> 0) & 0xFF), (unsigned)alpha};
-			}
-		}
-		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_tensor_curve(points,
-		{},
-																	 colors,
-																	 false
-																	 );
-
-		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
-		{
-			GRenderer->put_BrushGradInfo(info);
-			m_pRenderer->DrawPath(c_nWindingFillMode);
-		}
-
-		m_pRenderer->EndCommand(c_nPathType);
-		m_pRenderer->put_BrushType(brush);
-
-		return true;
-	}
-	void RendererOutputDev::StartShadedFill(GrState *pGState)
+//	bool RendererOutputDev::FunctionShadedFill(GfxState *pGState, GfxFunctionShading *pShading)
+//	{
+//		if (m_bDrawOnlyText)
+//			return true;
+//
+//		if (m_bTransparentGroupSoftMask)
+//			return true;
+//
+//        DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
+//		long brush;
+//		int alpha = pGState->GetFillOpacity() * 255;
+//		m_pRenderer->get_BrushType(&brush);
+//		m_pRenderer->put_BrushType(c_BrushTypeMyTestGradient);
+//		double x1,x2,y1,y2;
+//		pShading->GetDomain(&x1, &y1, &x2, &y2);
+//		std::vector<float> mapping(6);
+//		for (int i = 0; i < 6; i++)
+//		{
+//			mapping[i] = PDFCoordsToMM(pShading->GetMatrix()[i]);
+//		}
+//		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_functional(x1, x2, y1, y2, mapping);
+//
+//		float cur_x = 0, cur_y = 0;
+//		float delta_x = (x2 - x1) / info.shading.function.get_resolution();
+//		float delta_y = (y2 - y1) / info.shading.function.get_resolution();
+//        GfxColorSpace *ColorSpace = pShading->GetColorSpace();
+//
+//		for (size_t i = 0; i < info.shading.function.get_resolution(); i++)
+//        {
+//		    cur_x = 0;
+//            for (size_t j = 0; j < info.shading.function.get_resolution(); j++)
+//            {
+//                PdfReader::GfxColor c;
+//                pShading->GetColor(cur_x, cur_y, &c);
+//                DWORD dword_color = ColorSpace->GetDwordColor(&c);
+//                info.shading.function.set_color(j, i, (dword_color >> 16) & 0xFF,
+//                                                (dword_color >> 8) & 0xFF, (dword_color >> 0) & 0xFF, alpha);
+//                cur_x += delta_x;
+//            }
+//            cur_y += delta_y;
+//        }
+//
+//		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
+//		{
+//			GRenderer->put_BrushGradInfo(info);
+//			m_pRenderer->DrawPath(c_nWindingFillMode);
+//		}
+//
+//		m_pRenderer->EndCommand(c_nPathType);
+//		m_pRenderer->put_BrushType(brush);
+//
+//		return true;
+//	}
+//	bool RendererOutputDev::AxialShadedFill(GfxState *pGState, GfxAxialShading *pShading)
+//	{
+//		if (m_bDrawOnlyText)
+//			return true;
+//
+//		if (m_bTransparentGroupSoftMask)
+//			return true;
+//
+//		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
+//
+//		long brush;
+//		int alpha = pGState->GetFillOpacity() * 255;
+//		m_pRenderer->get_BrushType(&brush);
+//		m_pRenderer->put_BrushType(c_BrushTypePathNewLinearGradient);
+//
+//		double x1, x2, y1, y2;
+//		double t0, t1;
+//		pShading->GetCoords(&x1, &y1, &x2, &y2);
+//		t0 = pShading->GetDomain0();
+//		t1 = pShading->GetDomain1();
+//
+//        x1 = PDFCoordsToMM(x1);
+//        x2 = PDFCoordsToMM(x2);
+//        y1 = PDFCoordsToMM(y1);
+//        y2 = PDFCoordsToMM(y2);
+//
+//		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_linear({x1, y1}, {x2, y2}, t0, t1,
+//															   pShading->GetExtendStart(), pShading->GetExtendEnd());
+//
+//		GfxColorSpace *ColorSpace = pShading->GetColorSpace();
+//		float delta = (t1 - t0) / info.shading.function.get_resolution();
+//		float t = t0;
+//		for (size_t i = 0; i < info.shading.function.get_resolution(); i++)
+//		{
+//			PdfReader::GfxColor c;
+//			pShading->GetColor(t, &c);
+//			t+=delta;
+//			DWORD dword_color = ColorSpace->GetDwordColor(&c);
+//			info.shading.function.set_color(i, (dword_color >> 16) & 0xFF,
+//											(dword_color >> 8) & 0xFF, (dword_color >> 0) & 0xFF, alpha);
+//		}
+//
+//		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
+//		{
+//			GRenderer->put_BrushGradInfo(info);
+//			m_pRenderer->DrawPath(c_nWindingFillMode);
+//		}
+//
+//		m_pRenderer->EndCommand(c_nPathType);
+//		m_pRenderer->put_BrushType(brush);
+//
+//		return true;
+//	}
+//	bool RendererOutputDev::RadialShadedFill(GfxState *pGState, GrRadialShading *pShading)
+//	{
+//		if (m_bDrawOnlyText)
+//			return true;
+//
+//		if (m_bTransparentGroupSoftMask)
+//			return true;
+//
+//		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
+//
+//		long brush;
+//		int alpha = pGState->GetFillOpacity() * 255;
+//		m_pRenderer->get_BrushType(&brush);
+//		m_pRenderer->put_BrushType(c_BrushTypePathRadialGradient);
+//
+//		double x1, x2, y1, y2, r1, r2;
+//		double t0, t1;
+//		pShading->GetCoords(&x1, &y1, &r1, &x2, &y2, &r2);
+//		t0 = pShading->GetDomain0();
+//		t1 = pShading->GetDomain1();
+//
+//		double xdpi;
+//		m_pRenderer->get_DpiX(&xdpi);
+//
+//		x1 = PDFCoordsToMM(x1);
+//        x2 = PDFCoordsToMM(x2);
+//        y1 = PDFCoordsToMM(y1);
+//        y2 = PDFCoordsToMM(y2);
+//        r1 = PDFCoordsToMM(r1);
+//        r2 = PDFCoordsToMM(r2);
+//
+//		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_radial({x1, y1}, {x2, y2}, r1, r2,
+//															   t0, t1, pShading->GetExtendFirst(), pShading->GetExtendSecond());
+//
+//		GfxColorSpace *ColorSpace = pShading->GetColorSpace();;
+//		float delta = (t1 - t0) / info.shading.function.get_resolution();
+//		float t = t0;
+//		for (size_t i = 0; i < info.shading.function.get_resolution(); i++, t += delta)
+//		{
+//			PdfReader::GfxColor c;
+//			pShading->GetColor(t, &c);
+//			DWORD dword_color = ColorSpace->GetDwordColor(&c);
+//			info.shading.function.set_color(i, (dword_color >> 16) & 0xFF,
+//											(dword_color >> 8) & 0xFF, (dword_color >> 0) & 0xFF, alpha);
+//		}
+//
+//		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
+//		{
+//			GRenderer->put_BrushGradInfo(info);
+//			m_pRenderer->DrawPath(c_nWindingFillMode);
+//		}
+//		m_pRenderer->EndCommand(c_nPathType);
+//		m_pRenderer->put_BrushType(brush);
+//
+//		return true;
+//	}
+//	bool RendererOutputDev::GouraundTriangleFill(GfxState *pGState, const std::vector<GfxColor*> &colors, const std::vector<NSStructures::Point> &points)
+//	{
+//		if (m_bDrawOnlyText)
+//			return true;
+//
+//		if (m_bTransparentGroupSoftMask)
+//			return true;
+//
+//		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
+//
+//		long brush;
+//		int alpha = pGState->GetFillOpacity() * 255;
+//		m_pRenderer->get_BrushType(&brush);
+//		m_pRenderer->put_BrushType(c_BrushTypeTriagnleMeshGradient);
+//
+//		std::vector<NSStructures::Point> pixel_points;
+//		std::vector<agg::rgba8> rgba8_colors;
+//		GrCalRGBColorSpace ColorSpace;
+//
+//		for (int i = 0; i < 3; i++)
+//		{
+//			GfxColor c = *colors[i];
+//			DWORD dword_color = ColorSpace.GetDwordColor(&c);
+//			rgba8_colors.push_back({dword_color & 0xFF, (dword_color >> 8) & 0xFF, (dword_color >> 16) & 0xFF, (unsigned)alpha});
+//			double x = points[i].x;
+//			double y = points[i].y;
+//			x = PDFCoordsToMM(x);
+//            y = PDFCoordsToMM(y);
+//			pixel_points.push_back({x, y});
+//		}
+//
+//		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_triangle(pixel_points, rgba8_colors, {}, false);
+//
+//		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
+//		{
+//			GRenderer->put_BrushGradInfo(info);
+//			m_pRenderer->DrawPath(c_nWindingFillMode);
+//		}
+//
+//		m_pRenderer->EndCommand(c_nPathType);
+//		m_pRenderer->put_BrushType(brush);
+//		return true;
+//	}
+//	bool RendererOutputDev::PatchMeshFill(GfxState *pGState, PdfReader::GrPatch *patch)
+//	{
+//		if (m_bDrawOnlyText)
+//			return true;
+//
+//		if (m_bTransparentGroupSoftMask)
+//			return true;
+//
+//		DoPath(pGState, pGState->GetPath(), pGState->GetPageHeight(), pGState->GetCTM());
+//
+//		long brush;
+//		int alpha = pGState->GetFillOpacity() * 255;
+//		m_pRenderer->get_BrushType(&brush);
+//		m_pRenderer->put_BrushType(c_BrushTypeTensorCurveGradient);
+//
+//		std::vector<std::vector<NSStructures::Point>> points(4, std::vector<NSStructures::Point>(4));
+//		for (int i = 0; i < 4; i++)
+//		{
+//			for (int j = 0; j < 4; j++)
+//			{
+//				double x = patch->arrX[i][j];
+//				double y = patch->arrY[i][j];
+//
+//				x = PDFCoordsToMM(x);
+//                y = PDFCoordsToMM(y);
+//				points[i][j].x = x;
+//				points[i][j].y = y;
+//			}
+//		}
+//		std::vector<std::vector<agg::rgba8>> colors(2, std::vector<agg::rgba8>(2));
+//		GrDeviceRGBColorSpace ColorSpace;
+//		for (int i = 0; i < 2; i ++)
+//		{
+//			for (int j = 0; j < 2; j++)
+//			{
+//				DWORD dcolor = ColorSpace.GetDwordColor(&patch->arrColor[i][j]);
+//				colors[j][i] = {(unsigned)((dcolor >> 16)  & 0xFF), (unsigned)((dcolor >> 8) & 0xFF), (unsigned)((dcolor >> 0) & 0xFF), (unsigned)alpha};
+//			}
+//		}
+//		NSStructures::GradientInfo info = NSStructures::GInfoConstructor::get_tensor_curve(points,
+//		{},
+//																	 colors,
+//																	 false
+//																	 );
+//
+//		if (NSGraphics::IGraphicsRenderer* GRenderer = dynamic_cast<NSGraphics::IGraphicsRenderer*>(m_pRenderer))
+//		{
+//			GRenderer->put_BrushGradInfo(info);
+//			m_pRenderer->DrawPath(c_nWindingFillMode);
+//		}
+//
+//		m_pRenderer->EndCommand(c_nPathType);
+//		m_pRenderer->put_BrushType(brush);
+//
+//		return true;
+//	}
+	void RendererOutputDev::StartShadedFill(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2815,7 +2815,7 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPDFTilingFillIteration);
     }
-    void RendererOutputDev::StartSimpleTilingFill(GrState *pGState, int  nX0, int nY0, int nX1, int nY1, double dStepX, double dStepY, double dXMin, double dYMin, double dXMax, double dYMax, double* pMatrix)
+    void RendererOutputDev::StartSimpleTilingFill(GfxState *pGState, int  nX0, int nY0, int nX1, int nY1, double dStepX, double dStepY, double dXMin, double dYMin, double dXMax, double dYMax, double* pMatrix)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2860,28 +2860,28 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nPDFTilingFill);
     }
-    void RendererOutputDev::Clip(GrState *pGState)
+    void RendererOutputDev::Clip(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
 
         UpdateClip(pGState);
     }
-    void RendererOutputDev::EoClip(GrState *pGState)
+    void RendererOutputDev::EoClip(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
 
         UpdateClip(pGState);
     }
-    void RendererOutputDev::ClipToStrokePath(GrState *pGState)
+    void RendererOutputDev::ClipToStrokePath(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
 
         UpdateClip(pGState);
     }
-    void RendererOutputDev::ClipToPath(GrState *pGState, GrPath *pPath, double *pMatrix, bool bEO)
+    void RendererOutputDev::ClipToPath(GfxState *pGState, GrPath *pPath, double *pMatrix, bool bEO)
     {
         if (m_bDrawOnlyText)
             return;
@@ -2930,7 +2930,7 @@ namespace PdfReader
             RELEASEARRAYOBJECTS(pGids);
         }
     }
-    void RendererOutputDev::EndTextObject(GrState *pGState)
+    void RendererOutputDev::EndTextObject(GfxState *pGState)
     {
         if (NULL != m_pBufferTextClip)
         {
@@ -2939,7 +2939,7 @@ namespace PdfReader
             RELEASEOBJECT(m_pBufferTextClip);
         }
     }
-    void RendererOutputDev::BeginStringOperator(GrState *pGState)
+    void RendererOutputDev::BeginStringOperator(GfxState *pGState)
     {
         if (m_bTransparentGroupSoftMask)
             return;
@@ -2969,7 +2969,7 @@ namespace PdfReader
             //::SysFreeString( bsPen );
         }
     }
-    void RendererOutputDev::EndStringOperator(GrState *pGState)
+    void RendererOutputDev::EndStringOperator(GfxState *pGState)
     {
         if (m_bTransparentGroupSoftMask)
             return;
@@ -2995,7 +2995,7 @@ namespace PdfReader
 
         m_pRenderer->EndCommand(c_nTextType);
     }
-    void RendererOutputDev::DrawString(GrState *pGState, StringExt *seString)
+    void RendererOutputDev::DrawString(GfxState *pGState, GString *seString);
     {
         if (m_bTransparentGroupSoftMask)
             return;
@@ -3044,7 +3044,7 @@ namespace PdfReader
         m_pRenderer->CommandDrawTextEx(wsUnicodeText, pGids, unGidsCount, PDFCoordsToMM(100), PDFCoordsToMM(100), 0, PDFCoordsToMM(0));
         RELEASEARRAYOBJECTS(pGids);
     }
-    void RendererOutputDev::DrawChar(GrState *pGState, double dX, double dY, double dDx, double dDy, double dOriginX, double dOriginY, CharCode nCode, int nBytesCount, Unicode *pUnicode, int nUnicodeLen)
+    void RendererOutputDev::DrawChar(GfxState *pGState, double dX, double dY, double dDx, double dDy, double dOriginX, double dOriginY, CharCode nCode, int nBytesCount, Unicode *pUnicode, int nUnicodeLen)
     {
         if (m_bTransparentGroupSoftMask)
             return;
@@ -3239,23 +3239,23 @@ namespace PdfReader
 
         m_pRenderer->put_FontSize(dOldSize);
     }
-    bool RendererOutputDev::BeginType3Char(GrState *pGState, double dX, double dY, double dDx, double dDy, CharCode nCode, Unicode *pUnicode, int nUnicodeLen)
+    bool RendererOutputDev::BeginType3Char(GfxState *pGState, double dX, double dY, double dDx, double dDy, CharCode nCode, Unicode *pUnicode, int nUnicodeLen)
     {
         return false;
     }
-    void RendererOutputDev::EndType3Char(GrState *pGState)
+    void RendererOutputDev::EndType3Char(GfxState *pGState)
     {
         return;
     }
-    void RendererOutputDev::Type3D0(GrState *pGState, double dWx, double dWy)
+    void RendererOutputDev::Type3D0(GfxState *pGState, double dWx, double dWy)
     {
         return;
     }
-    void RendererOutputDev::Type3D1(GrState *pGState, double dWx, double dWy, double dBLx, double dBLy, double dTRx, double dTRy)
+    void RendererOutputDev::Type3D1(GfxState *pGState, double dWx, double dWy, double dBLx, double dBLy, double dTRx, double dTRy)
     {
         return;
     }
-    void RendererOutputDev::DrawImageMask(GrState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, bool bInvert, bool bInlineImage)
+    void RendererOutputDev::DrawImageMask(GfxState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, bool bInvert, bool bInlineImage)
     {
         if (m_bDrawOnlyText)
             return;
@@ -3283,7 +3283,7 @@ namespace PdfReader
 
         pImageStream->Reset();
 
-        GrColorSpace* pColorSpace = pGState->GetFillColorSpace();
+        GfxColorSpace* pColorSpace = pGState->GetFillColorSpace();
         GrRGB oRGB;
         pColorSpace->GetRGB(pGState->GetFillColor(), &oRGB);
 
@@ -3330,7 +3330,7 @@ namespace PdfReader
         DoTransform(arrMatrix, &dShiftX, &dShiftY, true);
         m_pRenderer->DrawImage(&oImage, 0 + dShiftX, 0 + dShiftY, PDFCoordsToMM(1), PDFCoordsToMM(1));
     }
-    void RendererOutputDev::DrawImage(GrState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, GrImageColorMap *pColorMap, int *pMaskColors, bool bInlineImg)
+    void RendererOutputDev::DrawImage(GfxState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, GrImageColorMap *pColorMap, int *pMaskColors, bool bInlineImg)
     {
         if (m_bDrawOnlyText)
             return;
@@ -3409,7 +3409,7 @@ namespace PdfReader
         DoTransform(arrMatrix, &dShiftX, &dShiftY, true);
         m_pRenderer->DrawImage(&oImage, 0 + dShiftX, 0 + dShiftY, PDFCoordsToMM(1), PDFCoordsToMM(1));
     }
-    void RendererOutputDev::DrawMaskedImage(GrState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, GrImageColorMap *pColorMap, Stream *pMaskStream, int nMaskWidth, int nMaskHeight, bool bMaskInvert)
+    void RendererOutputDev::DrawMaskedImage(GfxState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, GrImageColorMap *pColorMap, Stream *pMaskStream, int nMaskWidth, int nMaskHeight, bool bMaskInvert)
     {
         if (m_bDrawOnlyText)
             return;
@@ -3533,7 +3533,7 @@ namespace PdfReader
         DoTransform(arrMatrix, &dShiftX, &dShiftY, true);
         m_pRenderer->DrawImage(&oImage, 0 + dShiftX, 0 + dShiftY, PDFCoordsToMM(1), PDFCoordsToMM(1));
     }
-    void RendererOutputDev::DrawSoftMaskedImage(GrState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, GrImageColorMap *pColorMap, Stream *pMaskStream, int nMaskWidth, int nMaskHeight, GrImageColorMap *pMaskColorMap, unsigned char *pMatteColor)
+    void RendererOutputDev::DrawSoftMaskedImage(GfxState *pGState, Object *pRef, Stream *pStream, int nWidth, int nHeight, GrImageColorMap *pColorMap, Stream *pMaskStream, int nMaskWidth, int nMaskHeight, GrImageColorMap *pMaskColorMap, unsigned char *pMatteColor)
     {
         if (m_bDrawOnlyText)
             return;
@@ -3755,12 +3755,12 @@ namespace PdfReader
         DoTransform(arrMatrix, &dShiftX, &dShiftY, true);
         m_pRenderer->DrawImage(&oImage, 0 + dShiftX, 0 + dShiftY, PDFCoordsToMM(1), PDFCoordsToMM(1));
     }
-    void RendererOutputDev::BeginTransparencyGroup(GrState *pGState, double *pBBox, GrColorSpace *pBlendingColorSpace, bool bIsolated, bool bKnockout, bool bForSoftMask)
+    void RendererOutputDev::BeginTransparencyGroup(GfxState *pGState, double *pBBox, GfxColorSpace *pBlendingColorSpace, bool bIsolated, bool bKnockout, bool bForSoftMask)
     {
         m_bTransparentGroup = true;
         m_bTransparentGroupSoftMask = bForSoftMask;
     }
-    void RendererOutputDev::EndTransparencyGroup(GrState *pGState)
+    void RendererOutputDev::EndTransparencyGroup(GfxState *pGState)
     {
         m_bTransparentGroup = false;
         m_bTransparentGroupSoftMask = false;
@@ -3770,13 +3770,13 @@ namespace PdfReader
 
         m_pTransparentGroupSoftMask = NULL;
     }
-    void RendererOutputDev::PaintTransparencyGroup(GrState *pGState, double *pBBox)
+    void RendererOutputDev::PaintTransparencyGroup(GfxState *pGState, double *pBBox)
     {
     }
-    void RendererOutputDev::SetSoftMask(GrState *pGState, double *pBBox, bool bAlpha, Function *pTransferFunc, GrColor *pBackdropColor)
+    void RendererOutputDev::SetSoftMask(GfxState *pGState, double *pBBox, bool bAlpha, Function *pTransferFunc, GfxColor *pBackdropColor)
     {
     }
-    void RendererOutputDev::ClearSoftMask(GrState *pGState)
+    void RendererOutputDev::ClearSoftMask(GfxState *pGState)
     {
     }
     void RendererOutputDev::NewPDF(XRef *pXref)
@@ -3788,7 +3788,7 @@ namespace PdfReader
         *pdDeviceX = dUserX * pMatrix[0] + dUserY * pMatrix[2] + pMatrix[4];
         *pdDeviceY = dUserX * pMatrix[1] + dUserY * pMatrix[3] + pMatrix[5];
     }
-    void RendererOutputDev::DoPath(GrState *pGState, GrPath *pPath, double dPageHeight, double *pCTM)
+    void RendererOutputDev::DoPath(GfxState *pGState, GrPath *pPath, double dPageHeight, double *pCTM)
     {
         if (m_bDrawOnlyText)
             return;
@@ -3840,7 +3840,7 @@ namespace PdfReader
             }
         }
     }
-    void RendererOutputDev::UpdateClip(GrState *pGState)
+    void RendererOutputDev::UpdateClip(GfxState *pGState)
     {
         if (m_bDrawOnlyText)
             return;
@@ -3853,7 +3853,7 @@ namespace PdfReader
 
         UpdateClipAttack(pGState);
     }
-    void RendererOutputDev::UpdateClipAttack(GrState *pGState)
+    void RendererOutputDev::UpdateClipAttack(GfxState *pGState)
     {
         GrClip *pClip = pGState->GetClip();
 

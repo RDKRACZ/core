@@ -6,7 +6,7 @@ TEMPLATE = lib
 
 CONFIG += shared
 CONFIG += plugin
-
+CONFIG += warn_off
 CONFIG += core_static_link_libstd
 
 CORE_ROOT_DIR = $$PWD/..
@@ -49,7 +49,7 @@ SOURCES -= \
     $$PWD/lib/xpdf/pdftops.cc \
     $$PWD/lib/xpdf/pdftotext.cc \
     $$PWD/lib/xpdf/pdfimages.cc \
-    $$PWD/lib/xpdf/pdfdetatch.cc \
+    $$PWD/lib/xpdf/pdfdetach.cc \
     $$PWD/lib/xpdf/pdfinfo.cc \ 
     $$PWD/lib/xpdf/pdffonts.cc
 

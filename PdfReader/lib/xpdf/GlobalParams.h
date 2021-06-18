@@ -21,7 +21,7 @@
 #endif
 #include "gtypes.h"
 #include "CharTypes.h"
-
+#include "../../../DesktopEditor/graphics/pro/Fonts.h"
 #if MULTITHREADED
 #include "GMutex.h"
 #endif
@@ -299,6 +299,8 @@ namespace PdfReader {
 
         void getPSImageableArea(int *llx, int *lly, int *urx, int *ury);
 
+        NSFonts::IFontManager *m_pFontManager;
+
         GBool getPSDuplex();
 
         GBool getPSCrop();
@@ -558,6 +560,8 @@ namespace PdfReader {
         void setPrintCommands(GBool printCommandsA);
 
         void setErrQuiet(GBool errQuietA);
+
+        void SetFontManager(NSFonts::IFontManager* pFontManager);
 
 #ifdef _WIN32
         void setWin32ErrorInfo(const char *func, DWORD code);

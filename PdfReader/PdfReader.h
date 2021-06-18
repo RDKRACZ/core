@@ -39,9 +39,16 @@
 #define PDFREADER_DECL_EXPORT Q_DECL_EXPORT
 #endif
 
-#include "Src/ErrorConstants.h"
+
 #include "../DesktopEditor/common/officedrawingfile.h"
-#include "../DesktopEditor/graphics/pro/Fonts.h"
+
+#include "../../DesktopEditor/graphics/IRenderer.h"
+#include "../../DesktopEditor/graphics/pro/Fonts.h"
+#include "../../DesktopEditor/graphics/pro/Graphics.h"
+#include "../../DesktopEditor/graphics/TemporaryCS.h"
+#include "../../DesktopEditor/graphics/structures.h"
+#include "lib/xpdf/ErrorCodes.h"
+#include "Src/RendererOutputDev.h"
 
 namespace PdfReader {
     class CPdfReader_Private;
@@ -94,5 +101,5 @@ namespace PdfReader {
         EError m_eError;
     };
 }
-}
+
 #endif // _PDF_READER_H

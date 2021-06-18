@@ -45,6 +45,7 @@
 #include "FontEncodingTables.h"
 #include "GlobalParams.h"
 
+
 #ifdef _WIN32
 #  define strcasecmp stricmp
 #  define strncasecmp strnicmp
@@ -3741,6 +3742,11 @@ namespace PdfReader {
         lockGlobalParams;
         mapExtTrueTypeFontsViaUnicode = map;
         unlockGlobalParams;
+    }
+
+    void GlobalParams::SetFontManager(NSFonts::IFontManager* pFontManager)
+    {
+        m_pFontManager = pFontManager;
     }
 
     void GlobalParams::setTabStateFile(char *tabStateFileA) {

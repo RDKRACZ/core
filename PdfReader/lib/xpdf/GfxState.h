@@ -18,6 +18,7 @@
 #include "gtypes.h"
 #include "Object.h"
 #include "Function.h"
+
 namespace PdfReader {
     class Array;
 

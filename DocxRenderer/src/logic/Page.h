@@ -45,6 +45,7 @@ namespace NSDocxRenderer
 
 		double m_dWidth;
 		double m_dHeight;
+        double m_dLeft;
 
 		LONG						m_lCurrentCommand;
 
@@ -710,8 +711,14 @@ namespace NSDocxRenderer
 			}
 
             size_t nCountParagraphs = m_arParagraphs.size();
+            if (nCountParagraphs)
+                m_dLeft = m_arParagraphs[0]->m_dLeft;
+            for (size_t i = 0; i < nCountParagraphs; ++i)
+                if (m_arParagraphs[i]->m_dLeft < m_dLeft)
+                    m_dLeft = m_arParagraphs[i]->m_dLeft;
 			for (size_t i = 0; i < nCountParagraphs; ++i)
 			{
+                m_arParagraphs[i]->m_dLeft -= m_dLeft;
 				m_arParagraphs[i]->ToXml(oWriter);
 			}
 		}
@@ -735,10 +742,18 @@ namespace NSDocxRenderer
             (lWidthDx >= lHeightDx) ? oWriter.WriteString(L"landscape") : oWriter.WriteString(L"portrait");
             oWriter.WriteString(L"\"/>");
 
-			if (!bLastPage)
-                oWriter.WriteString(L"<w:pgMar w:top=\"0\" w:right=\"0\" w:bottom=\"0\" w:left=\"0\"/></w:sectPr><w:spacing w:line=\"1\" w:lineRule=\"exact\"/></w:pPr></w:p>");
-			else
-                oWriter.WriteString(L"<w:pgMar w:top=\"0\" w:right=\"0\" w:bottom=\"0\" w:left=\"0\" w:header=\"0\" w:footer=\"0\" w:gutter=\"0\"/></w:sectPr>");
+            oWriter.WriteString(L"<w:pgMar w:top=\"0\" w:right=\"0\" w:bottom=\"0\" w:left=\"");
+            oWriter.AddInt((int)(m_dLeft * c_dMMToDx));
+            oWriter.WriteString(L"\"");
+            if (!bLastPage)
+                oWriter.WriteString(L"/></w:sectPr><w:spacing w:line=\"1\" w:lineRule=\"exact\"/></w:pPr></w:p>");
+            else
+                oWriter.WriteString(L" w:header=\"0\" w:footer=\"0\" w:gutter=\"0\"/></w:sectPr>");
+
+//			if (!bLastPage)
+//                oWriter.WriteString(L"<w:pgMar w:top=\"0\" w:right=\"0\" w:bottom=\"0\" w:left=\"0\"/></w:sectPr><w:spacing w:line=\"1\" w:lineRule=\"exact\"/></w:pPr></w:p>");
+//			else
+//                oWriter.WriteString(L"<w:pgMar w:top=\"0\" w:right=\"0\" w:bottom=\"0\" w:left=\"0\" w:header=\"0\" w:footer=\"0\" w:gutter=\"0\"/></w:sectPr>");
 		}
 	};
 }
